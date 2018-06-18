@@ -12,15 +12,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class Converter implements FileConverter {
 
-	private Path output;
-	private Path input;
-
 	@Override
 	public void convertFile(Path input, Path output) {
-		this.input = input;
-		this.output = output;
 		try {
-			readFile(); // todo - add parameter
+			long start = System.currentTimeMillis();
+			readFile(input, output);
+			System.out.println(System.currentTimeMillis() - start);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
@@ -28,28 +25,21 @@ public class Converter implements FileConverter {
 		}
 	}
 
-	@Override
 	public void convertFile(File input, File output) {
-
+		convertFile(input.toPath(), output.toPath());
 	}
 
-	public String hashTextLine(String line) throws NoSuchAlgorithmException {
-		MessageDigest m = MessageDigest.getInstance("MD5");
-		m.update(line.getBytes(), 0, line.length());
-		String hashedData = new BigInteger(1, m.digest()).toString(16);
-		return line + " : " + hashedData + "\r";
-	}
-
-	public void readFile() throws IOException, NoSuchAlgorithmException {
+	public void readFile(Path input, Path output) throws IOException, NoSuchAlgorithmException {
 		BufferedReader reader = new BufferedReader(new FileReader(input.toString()));
-		FileOutputStream fos = new FileOutputStream("output.txt");
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
-
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output.toFile())));
 		String line;
+		MD5Hasher md5Hasher = new MD5Hasher();
 		while ((line = reader.readLine()) != null) {
-			writer.write(hashTextLine(line));
+			writer.write(line + ";" + md5Hasher.hashTextLine(line));
+			writer.newLine();
 		}
-		writer.close();
 		reader.close();
+		writer.close();
 	}
+	
 }

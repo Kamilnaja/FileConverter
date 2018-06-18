@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 public class FileConverterTest {
 
 	public static void main(String[] args) {
-		Path input = Paths.get("./input.txt");
+		Path input = Paths.get("c:/tmp/words.txt");
 		Path output = Paths.get("./output.txt");
 
 		Converter fileConverter = new Converter();
