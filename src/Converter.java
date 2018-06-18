@@ -1,9 +1,10 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -19,7 +20,7 @@ public class Converter implements FileConverter {
 		this.input = input;
 		this.output = output;
 		try {
-			readFile();
+			readFile(); // todo - add parameter
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
@@ -29,7 +30,6 @@ public class Converter implements FileConverter {
 
 	@Override
 	public void convertFile(File input, File output) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -37,28 +37,19 @@ public class Converter implements FileConverter {
 		MessageDigest m = MessageDigest.getInstance("MD5");
 		m.update(line.getBytes(), 0, line.length());
 		String hashedData = new BigInteger(1, m.digest()).toString(16);
-		return hashedData;
+		return line + " : " + hashedData + "\r";
 	}
 
-	public void saveHashedText(String hashedText) throws FileNotFoundException {
-		System.out.println("text to save = " + hashedText);
-		PrintWriter out = new PrintWriter(output.toString());
-		out.println(hashedText);
-		out.close();
-	}
-
-	public String readFile() throws IOException, NoSuchAlgorithmException {
+	public void readFile() throws IOException, NoSuchAlgorithmException {
 		BufferedReader reader = new BufferedReader(new FileReader(input.toString()));
+		FileOutputStream fos = new FileOutputStream("output.txt");
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+
 		String line;
-		String readedText = "";
-		String textToSave = "";
 		while ((line = reader.readLine()) != null) {
-			if (line.length() > 0) {
-				textToSave += (line + "; " + hashTextLine(line) + "\r");
-			}
+			writer.write(hashTextLine(line));
 		}
-		saveHashedText(textToSave);
+		writer.close();
 		reader.close();
-		return readedText;
 	}
 }
