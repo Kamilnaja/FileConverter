@@ -3,11 +3,11 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
-public class MD5Hasher {
+public class MD2Hasher {
 	private MessageDigest messageDigest;
-
-	public MD5Hasher() throws NoSuchAlgorithmException {
-		messageDigest = MessageDigest.getInstance("MD5");
+	
+	public MD2Hasher() throws NoSuchAlgorithmException {
+		messageDigest = MessageDigest.getInstance("MD2");
 	}
 
 	public String hashTextLine(String line) throws NoSuchAlgorithmException {
